@@ -116,6 +116,14 @@ static const bool config_debug =
 #  error "This header cannot be included outside a testing context"
 #endif
 
+#if !defined(__STDC_VERSION_STDLIB_H__) || __STDC_VERSION_STDLIB_H__ < 202311L
+// free_sized is a sized free function introduced in C23.
+void JEMALLOC_SYS_NOTHROW free_sized(void* ptr, size_t size) JEMALLOC_CXX_THROW;
+// free_aligned_sized is an overaligned sized free function introduced in C23.
+void JEMALLOC_SYS_NOTHROW free_aligned_sized(void* ptr, size_t alignment,
+    size_t size) JEMALLOC_CXX_THROW;
+#endif
+
 /******************************************************************************/
 /*
  * Common test utilities.

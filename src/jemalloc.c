@@ -4015,6 +4015,27 @@ je_sdallocx_noflags(void *ptr, size_t size) {
 	LOG("core.sdallocx.exit", "");
 }
 
+JEMALLOC_EXPORT void JEMALLOC_NOTHROW
+je_free_sized(void *ptr, size_t size) {
+  LOG("core.free_sized.entry", "ptr: %p, size: %zu", ptr, size);
+
+  if (!free_fastpath(ptr, size, true)) {
+    sdallocx_default(ptr, size, 0);
+  }
+
+  LOG("core.free_sized.exit", "");
+}
+
+JEMALLOC_EXPORT void JEMALLOC_NOTHROW
+je_free_aligned_sized(void *ptr, size_t alignment, size_t size) {
+  LOG("core.free_aligned_sized.entry", "ptr: %p, alignment: %zu, size: %zu",
+    ptr, alignment, size);
+
+  sdallocx_default(ptr, size, MALLOCX_ALIGN(alignment));
+
+  LOG("core.free_aligned_sized.exit", "");
+}
+
 JEMALLOC_EXPORT size_t JEMALLOC_NOTHROW
 JEMALLOC_ATTR(pure)
 je_nallocx(size_t size, int flags) {
